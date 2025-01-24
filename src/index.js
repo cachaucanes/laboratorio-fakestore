@@ -47,15 +47,19 @@ const getData = (api) => {
     .then((response) => {      
       
       let products = response;
-      let output = products
-        .map((product, i) => {
+      console.log(products);
+      let output = products.map((product, i) => {
           // template
           return `
-            <li>
-              Nro: ${i + 1} - Name Product: ${product.title} - id: ${product.id}
-            </li>
+            <article class="Card">
+              <img src="${product.images[0]}" description="Imagen del producto ${product.title}" />
+              <h2>
+                ${product.title}
+                <small>$ ${product.price}</small>
+              </h2>
+            </article>
           `;
-        }).join("");
+        }).join("");         
 
       let newItem = document.createElement("section");
       newItem.classList.add("Item");
