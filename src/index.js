@@ -31,20 +31,35 @@ solviendo el primer problema, analizar api, iniciar en el producto 5 */
 const API = `https://api.escuelajs.co/api/v1/products?`;
 /*  https://api.escuelajs.co/api/v1/products?offset=0&limit=10 */
 
-
 const getQueryParams = (api) => {
   let nextPage = filters.pagination;
-    if (!firstFetch) {
-      nextPage = filters.pagination += 1;
-    }
-    let nextOffset = nextPage == 0 ? 5 : filters.limit * nextPage + 5;
-    let queryUpdate = { ...filters, pagination: nextPage, offset: nextOffset };
-    return [`${api}${new URLSearchParams(queryUpdate).toString()}`, queryUpdate.pagination];
-}
+  if (!firstFetch) {
+    nextPage = filters.pagination += 1;
+  }
+  let nextOffset = nextPage == 0 ? 5 : filters.limit * nextPage + 5;
+  let queryUpdate = { ...filters, pagination: nextPage, offset: nextOffset };
+  return [
+    `${api}${new URLSearchParams(queryUpdate).toString()}`,
+    queryUpdate.pagination,
+  ];
+};
+
+const messageAllProducts = () => {
+  const output = `
+              <p>
+                Todos los productos Obtenidos
+              </p>
+          `;
+  let newItem = document.createElement("div");
+  newItem.classList.add("AlertMessage");
+  newItem.innerHTML = output;
+  $app.appendChild(newItem);
+  intersectionObserver.unobserve($observe)
+};
 
 const getData = async (api) => {
-  try {    
-    const [queryParams, querypagination] = getQueryParams(api)
+  try {
+    const [queryParams, querypagination] = getQueryParams(api);
     console.log("....queryParams", queryParams);
 
     const res = await fetch(queryParams);
@@ -52,12 +67,16 @@ const getData = async (api) => {
     let products = response;
     console.log(products);
 
+    if(querypagination > 0 && !products.length){
+      messageAllProducts()
+    }
+
     let output = products
       .map((product) => {
         // template
         return `
             <article class="Card">
-              <img src="${product.images[0]}" description="Imagen del producto ${product.title}" onerror="this.onerror=null;this.src='https://i.imgur.com/hXa5HC2.jpeg';" />
+              <img src="${product.images[0]}" alt="${product.title}" onerror="this.onerror=null;this.src='https://i.imgur.com/hXa5HC2.jpeg';" />
               <h2>
                 ${product.title}
                 <small>$ ${product.price}</small>

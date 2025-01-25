@@ -51,6 +51,17 @@ body {
   min-width: max-content;
 }
 
+.AlertMessage {
+  text-decoration: none;
+  box-shadow: 8px 14px 38px rgba(39, 44, 49, 0.06),
+    1px 3px 8px rgba(39, 44, 49, 0.03);
+  border-radius: 5px;
+  margin: 0 0 100px 0;
+  display: block;
+  animation-duration: 4s;
+  animation-name: fade;
+}
+
 @keyframes fade {
   from {
     opacity: 0;
