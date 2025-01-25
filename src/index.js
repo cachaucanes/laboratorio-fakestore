@@ -1,3 +1,5 @@
+import './styles.css';
+
 const $app = document.getElementById("app");
 const $observe = document.getElementById("observe");
 
@@ -19,9 +21,6 @@ let filters = {
   pagination: parseInt(pagination),
   offset: 5,
 };
-console.log("pagination", pagination);
-
-console.log(filters);
 
 let isLoading = false;
 
@@ -59,13 +58,11 @@ const messageAllProducts = () => {
 
 const getData = async (api) => {
   try {
-    const [queryParams, querypagination] = getQueryParams(api);
-    console.log("....queryParams", queryParams);
+    const [queryParams, querypagination] = getQueryParams(api);  
 
     const res = await fetch(queryParams);
     const response = await res.json();
     let products = response;
-    console.log(products);
 
     if(querypagination > 0 && !products.length){
       messageAllProducts()
@@ -106,7 +103,6 @@ const loadData = () => {
 
 const intersectionObserver = new IntersectionObserver(
   (entries) => {
-    console.log(entries);
     if (entries[0].isIntersecting) {
       loadData();
     }

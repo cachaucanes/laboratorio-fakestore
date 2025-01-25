@@ -3,13 +3,13 @@
 Solución al reto:
 
 Nombre:
-Usuario Platzi:
+Usuario Platzi: softimus
 
 ## Reto:
 
-- [ ] Primer problema
-- [ ] Segundo problema
-- [ ] Tercer problema
-- [ ] Cuarto Problema
-- [ ] Quinto Problema
-- [ ] Sexto Problema
+- [*] Primer problema
+- [*] Segundo problema
+- [*] Tercer problema
+- [*] Cuarto Problema
+- [*] Quinto Problema
+- [*] Sexto Problema
