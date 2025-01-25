@@ -33,8 +33,9 @@ body {
 }
 
 .Card img {
-  width: 100px;
+  width: 100%;
   height: auto;
+  max-height: 372px;
   border-radius: 5px 5px 0 0;
 }
 
@@ -44,6 +45,10 @@ body {
   padding: 5px 10px;
   display: flex;
   justify-content: space-between;
+}
+
+.Card > h2 > small{
+  min-width: max-content;
 }
 
 @keyframes fade {

@@ -1,25 +1,25 @@
 const $app = document.getElementById("app");
 const $observe = document.getElementById("observe");
-let pagination = localStorage.getItem('pagination')
-let firstFetch = true
+
+localStorage.setItem("pagination", "0");
+let pagination = localStorage.getItem("pagination");
+let firstFetch = true;
 
 const savePagToLocalStorage = (pag) => {
-  localStorage.setItem('pagination', pag.toString())
+  localStorage.setItem("pagination", pag.toString());
+};
+
+if (typeof pagination !== "string") {
+  savePagToLocalStorage(0);
+  pagination = "0";
 }
 
-if(typeof pagination !== "string") {
-  savePagToLocalStorage(0)
-  pagination = '0'
-}
-
-  
 let filters = {
-  limit : 10,
-  pagination : parseInt(pagination),
-  offset: 5
-}
-console.log('pagination', pagination);
-
+  limit: 10,
+  pagination: parseInt(pagination),
+  offset: 5,
+};
+console.log("pagination", pagination);
 
 console.log(filters);
 
@@ -32,58 +32,63 @@ const API = `https://api.escuelajs.co/api/v1/products?`;
 /*  https://api.escuelajs.co/api/v1/products?offset=0&limit=10 */
 
 
-const getData = (api) => {
-  let nextPage = filters.pagination
-  if (!firstFetch) {
-   nextPage = filters.pagination += 1
-  }
-  let nextOffset = nextPage == 0 ? 5 : (filters.limit * nextPage) + 5
-  let queryUpdate = {...filters, pagination:nextPage, offset: nextOffset}
-  const queryParams = `${api}${new URLSearchParams(queryUpdate).toString()}` ;
-  console.log(queryParams);
-  
-  fetch(queryParams)
-    .then((response) => response.json())
-    .then((response) => {      
-      
-      let products = response;
-      console.log(products);
-      let output = products.map((product, i) => {
-          // template
-          return `
+const getQueryParams = (api) => {
+  let nextPage = filters.pagination;
+    if (!firstFetch) {
+      nextPage = filters.pagination += 1;
+    }
+    let nextOffset = nextPage == 0 ? 5 : filters.limit * nextPage + 5;
+    let queryUpdate = { ...filters, pagination: nextPage, offset: nextOffset };
+    return [`${api}${new URLSearchParams(queryUpdate).toString()}`, queryUpdate.pagination];
+}
+
+const getData = async (api) => {
+  try {    
+    const [queryParams, querypagination] = getQueryParams(api)
+    console.log("....queryParams", queryParams);
+
+    const res = await fetch(queryParams);
+    const response = await res.json();
+    let products = response;
+    console.log(products);
+
+    let output = products
+      .map((product) => {
+        // template
+        return `
             <article class="Card">
-              <img src="${product.images[0]}" description="Imagen del producto ${product.title}" />
+              <img src="${product.images[0]}" description="Imagen del producto ${product.title}" onerror="this.onerror=null;this.src='https://i.imgur.com/hXa5HC2.jpeg';" />
               <h2>
                 ${product.title}
                 <small>$ ${product.price}</small>
               </h2>
             </article>
           `;
-        }).join("");         
+      })
+      .join("");
 
-      let newItem = document.createElement("section");
-      newItem.classList.add("Item");
-      newItem.innerHTML = output;
-      $app.appendChild(newItem);
-      if (firstFetch) {
-        firstFetch = false
-      }else{
-        savePagToLocalStorage(queryUpdate.pagination)
-      }      
-    })
-    .catch((error) => {
-      console.log(error);
-      isLoading = false;
-    });
+    let newItem = document.createElement("section");
+    newItem.classList.add("Items");
+    newItem.innerHTML = output;
+    $app.appendChild(newItem);
+    if (firstFetch) {
+      firstFetch = false;
+    } else {
+      savePagToLocalStorage(querypagination);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const loadData = () => {
   getData(API);
 };
 
-const intersectionObserver = new IntersectionObserver((entries) => {
+const intersectionObserver = new IntersectionObserver(
+  (entries) => {
     console.log(entries);
-    if (entries[0].isIntersecting) {      
+    if (entries[0].isIntersecting) {
       loadData();
     }
 
@@ -97,7 +102,4 @@ const intersectionObserver = new IntersectionObserver((entries) => {
   }
 );
 
-
-  intersectionObserver.observe($observe);
-
-
+intersectionObserver.observe($observe);
