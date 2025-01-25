@@ -22,13 +22,7 @@ let filters = {
   offset: 5,
 };
 
-let isLoading = false;
-
-/* git commit -m 'Re
-solviendo el primer problema, analizar api, iniciar en el producto 5 */
-
 const API = `https://api.escuelajs.co/api/v1/products?`;
-/*  https://api.escuelajs.co/api/v1/products?offset=0&limit=10 */
 
 const getQueryParams = (api) => {
   let nextPage = filters.pagination;
@@ -106,8 +100,6 @@ const intersectionObserver = new IntersectionObserver(
     if (entries[0].isIntersecting) {
       loadData();
     }
-
-    // logic...
   },
   {
     // rootMargin: '0px 0px 100% 0px',
